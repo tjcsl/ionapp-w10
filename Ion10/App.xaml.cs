@@ -8,6 +8,8 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 using Microsoft.ApplicationInsights;
 
 namespace Ion10 {
@@ -15,6 +17,8 @@ namespace Ion10 {
     ///     Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     sealed partial class App : Application {
+        public static HttpClient HttpClient;
+
         /// <summary>
         ///     Initializes the singleton application object.  This is the first line of authored code
         ///     executed, and as such is the logical equivalent of main() or WinMain().
@@ -61,7 +65,7 @@ namespace Ion10 {
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                rootFrame.Navigate(typeof(LoginPage), e.Arguments);
             }
             // Ensure the current window is active
             Window.Current.Activate();
