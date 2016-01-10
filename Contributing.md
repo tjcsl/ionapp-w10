@@ -1,7 +1,9 @@
 # Required
 * Windows 10 Version 1511 or later
 * Visual Studio 2015 Update 1 or later (Community edition is free and is fine for this)
+    * At a bare minimum install Tools and Windows 10 SDK
 * Git for Windows
+    * Don't let Visual Studio install git, it does not place it on PATH
 
 # Recommended
 * ReSharper 10
