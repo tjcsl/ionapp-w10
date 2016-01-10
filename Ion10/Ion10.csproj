@@ -98,6 +98,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EighthActivity.cs" />
+    <Compile Include="EighthSignup.cs" />
+    <Compile Include="EighthSignupCollection.cs" />
     <Compile Include="EighthView.xaml.cs">
       <DependentUpon>EighthView.xaml</DependentUpon>
     </Compile>
