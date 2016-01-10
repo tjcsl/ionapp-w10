@@ -7,6 +7,44 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    </Grid>
+    <Page.Resources>
+        <DataTemplate x:Key="BlockTemplate" x:DataType="local:EighthSignup">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Bind BlockName}"/>
+                <TextBlock Text="{x:Bind ActivityTitle}"/>
+            </StackPanel>
+        </DataTemplate>
+        <CollectionViewSource x:Name="BlocksCollection"
+                              IsSourceGrouped="True"
+                              Source="{x:Bind Blocks}"/>
+        <CollectionViewSource x:Name="ActivitiesCollection"
+                              Source="{x:Bind Activities}"></CollectionViewSource>
+        <DataTemplate x:Key="ActivityListTemplate" x:DataType="local:EighthActivity">
+            
+        </DataTemplate>
+    </Page.Resources>
+
+    <SplitView Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+               IsPaneOpen="True">
+        <SplitView.Pane>
+            <ListView SelectionMode="Single"
+                      ItemTemplate="{StaticResource BlockTemplate}"
+                      ItemsSource="{Binding Source={StaticResource BlocksCollection}}">
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Key}"/>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </SplitView.Pane>
+        <RelativePanel>
+            <ListBox SelectionMode="Single"
+                     ItemsSource="{Binding Source={StaticResource ActivitiesCollection}}"
+                     ItemTemplate="{StaticResource ActivityListTemplate}"/>
+        </RelativePanel>
+    </SplitView>
 </Page>
