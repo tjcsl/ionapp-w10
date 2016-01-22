@@ -25,6 +25,7 @@ namespace Ion10 {
         private async Task<LoadMoreItemsResult> LoadMoreItemsAsync(CancellationToken c, uint count) {
             var baseIndex = Count;
             var lastDate = this[Count - 1].Key;
+            throw new Exception("FIXME: Actually do something");
         }
 
         /// <summary>

@@ -19,7 +19,8 @@
                               Source="{x:Bind Blocks}"/>
         <CollectionViewSource x:Name="ActivitiesCollection"
                               Source="{x:Bind Activities}"></CollectionViewSource>
-        <DataTemplate x:Key="ActivityListTemplate" x:DataType="local:EighthActivity">
+        <DataTemplate x:Key="ActivityListTemplate" >
+            <!-- FIXME: (XBF generation error code 0x09c4) x:DataType="local:EighthActivity"-->
             
         </DataTemplate>
     </Page.Resources>
