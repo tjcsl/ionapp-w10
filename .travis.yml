@@ -1,4 +1,0 @@
-language: csharp
-solution: Ion10.sln
-
-sudo: false
