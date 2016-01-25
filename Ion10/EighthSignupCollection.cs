@@ -19,13 +19,19 @@ namespace Ion10 {
         /// </returns>
         /// <param name="count">The number of items to load.</param>
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count) {
-            return AsyncInfo.Run((c) => LoadMoreItemsAsync(c, count));
+            return AsyncInfo.Run(c => LoadMoreItemsAsync(c, count));
         }
 
         private async Task<LoadMoreItemsResult> LoadMoreItemsAsync(CancellationToken c, uint count) {
             var baseIndex = Count;
             var lastDate = this[Count - 1].Key;
-            throw new Exception("FIXME: Actually do something");
+            var signups = (await EighthSignup.GetAsync(lastDate.AddDays(1), (int)count)).GroupBy(s => s.Date);
+            uint loaded = 0;
+            foreach(var signup in signups) {
+                Add(signup);
+                loaded++;
+            }
+            return new LoadMoreItemsResult {Count = loaded};
         }
 
         /// <summary>
