@@ -26,7 +26,7 @@ namespace Ion10 {
                 return;
             }
             App.HttpClient = new HttpClient(new IonHttpFilter(user, pass, new Uri("https://ion.tjhsst.edu")));
-            if(!(await App.HttpClient.GetAsync(new Uri("/profile"))).IsSuccessStatusCode) {
+            if(!(await App.HttpClient.GetAsync(new Uri("https://ion.tjhsst.edu/profile"))).IsSuccessStatusCode) {
                 await new MessageDialog("Invalid username or password").ShowAsync();
                 App.HttpClient.Dispose();
                 return;

@@ -6,22 +6,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
-    <StackPanel Orientation="Vertical"
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical"
                 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Image Width="150" Height="150" Source="Assets/Square150x150Logo.scale-200.png"></Image>
+        <TextBlock Margin="5" HorizontalAlignment="Center" FontSize="22" Text="TJ Intranet"/>
         <TextBox Name="Username"
+                 Width="192" Margin="5"
                  HorizontalAlignment="Center"
                  IsSpellCheckEnabled="False"
-                 PlaceholderText="Username"
-                 Width="192"/>
+                 PlaceholderText="Username"/>
         <PasswordBox Name="Password"
+                     Width="192" Margin="5"
                      HorizontalAlignment="Center"
-                     PlaceholderText="Password"
-                     Width="192"/>
+                     PlaceholderText="Password"/>
         <CheckBox Name="RememberMe"
                   HorizontalAlignment="Center">Remember me</CheckBox>
-        <Button Width="192"
-                Content="Login"
+        <Button Content="Login"
+                Width="192" Margin="5"
                 HorizontalAlignment="Center"
                 Click="Login"/>
     </StackPanel>
