@@ -9,7 +9,7 @@ namespace Ion10 {
         public int Capacity { get; set; }
         public string Description { get; set; }
         public bool Favorited { get; set; }
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public int NumberSignedUp { get; set; }
         public bool OneADay { get; set; }
@@ -28,7 +28,7 @@ namespace Ion10 {
                 Capacity = (int)json.GetNamedObject("roster").GetNamedNumber("capacity"),
                 Description = json.GetNamedString("description"),
                 Favorited = json.GetNamedBoolean("favorited"),
-                ID = (int)json.GetNamedNumber("id"),
+                Id = (int)json.GetNamedNumber("id"),
                 Name = json.GetNamedString("name"),
                 NumberSignedUp = (int)json.GetNamedObject("roster").GetNamedNumber("count"),
                 OneADay = json.GetNamedBoolean("one_a_day"),

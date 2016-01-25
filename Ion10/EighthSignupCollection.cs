@@ -22,7 +22,7 @@ namespace Ion10 {
             return AsyncInfo.Run(c => LoadMoreItemsAsync(c, count));
         }
 
-        private async Task<LoadMoreItemsResult> LoadMoreItemsAsync(CancellationToken c, uint count) {
+        private async Task<LoadMoreItemsResult> LoadMoreItemsAsync(CancellationToken _, uint count) {
             var baseIndex = Count;
             var lastDate = this[Count - 1].Key;
             var signups = (await EighthSignup.GetAsync(lastDate.AddDays(1), (int)count)).GroupBy(s => s.Date);

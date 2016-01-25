@@ -9,7 +9,7 @@ using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
 
 namespace Ion10 {
-    public class IonHttpFilter : IHttpFilter {
+    public sealed class IonHttpFilter : IHttpFilter {
         private readonly Uri baseUri;
         private readonly HttpBaseProtocolFilter baseFilter;
         private readonly HttpCredentialsHeaderValue credential;
