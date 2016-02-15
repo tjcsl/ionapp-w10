@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2015, Joshua Cotton
+﻿// Copyright (c) 2015, Ion Native App Team
 // All rights reserved.
 
 using System.Reflection;
