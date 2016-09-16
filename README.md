@@ -12,4 +12,5 @@ Do not, under any circumstances, add config.txt to the repository, or else jcott
 
 # Contributing
 Please use JetBrains ReSharper, it will enforce the style settings set for this project, students are eligible for free copies with a .edu email address
+
 TBD
