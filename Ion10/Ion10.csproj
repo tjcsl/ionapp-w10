@@ -92,7 +92,6 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="Ion10_TemporaryKey.pfx" />
     <None Include="project.json" />
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
