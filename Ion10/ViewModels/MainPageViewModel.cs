@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Security.Authentication.Web;
+using Windows.UI.Popups;
 using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace Ion10.ViewModels {
     public class MainPageViewModel : ViewModelBase {
@@ -35,9 +38,6 @@ namespace Ion10.ViewModels {
             args.Cancel = false;
             await Task.CompletedTask;
         }
-
-        public void GotoDetailsPage() =>
-            NavigationService.Navigate(typeof(Views.DetailPage), Value);
 
         public void GotoSettings() =>
             NavigationService.Navigate(typeof(Views.SettingsPage), 0);
