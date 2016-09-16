@@ -6,7 +6,10 @@ using Template10.Controls;
 using Template10.Common;
 using System;
 using System.Linq;
+using Windows.UI.Popups;
 using Windows.UI.Xaml.Data;
+using Windows.Web.Http;
+using Ion10.Services;
 
 namespace Ion10 {
     /// Documentation on APIs used in this page:
@@ -28,7 +31,10 @@ namespace Ion10 {
             #endregion
         }
 
+        public static HttpClient HttpClient { get; set; } = new HttpClient();
+
         public override async Task OnInitializeAsync(IActivatedEventArgs args) {
+            await SettingsService.Instance.InitializeAsync();
             if(Window.Current.Content as ModalDialog == null) {
                 // create a new frame 
                 var nav = NavigationServiceFactory(BackButton.Attach, ExistingContent.Include);
@@ -40,15 +46,27 @@ namespace Ion10 {
                     ModalContent = new Views.Busy(),
                 };
             }
-            await Task.CompletedTask;
         }
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args) {
-            // long-running startup tasks go here
-            await Task.Delay(5000);
-
+            var settings = SettingsService.Instance;
+            var code = await OAuthService.Instance.GetOAuthCodeAsync(
+                settings.BaseUri,
+                settings.OAuthId,
+                settings.OAuthCallbackUri);
+            var token = await OAuthService.Instance.GetOAuthTokenAsync(
+                settings.BaseUri,
+                settings.OAuthId,
+                settings.OAuthSecret,
+                code,
+                settings.OAuthCallbackUri);
+            await OAuthService.Instance.RefreshOAuthTokenAsync(
+                settings.BaseUri,
+                settings.OAuthId,
+                settings.OAuthSecret,
+                token.RefreshToken,
+                settings.OAuthCallbackUri);
             NavigationService.Navigate(typeof(Views.MainPage));
-            await Task.CompletedTask;
         }
     }
 }
