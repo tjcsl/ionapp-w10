@@ -6,16 +6,27 @@ using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 using Windows.UI.Popups;
 using Windows.Web.Http;
+using Windows.Web.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Ion10.Services {
-    public class OAuthService {
-        private OAuthService() {}
+    public class OAuthSession {
+        private readonly Uri baseUri;
+        private readonly string clientId;
+        private readonly string clientSecret;
+        private readonly Uri callbackUri;
+        private readonly HttpClient httpClient;
 
-        public static OAuthService Instance { get; } = new OAuthService();
+        public OAuthSession(Uri baseUri, string clientId, string clientSecret, Uri callbackUri) {
+            this.baseUri = baseUri;
+            this.clientId = clientId;
+            this.clientSecret = clientSecret;
+            this.callbackUri = callbackUri;
+            httpClient = new HttpClient();
+        }
 
-        public async Task<string> GetOAuthCodeAsync(Uri baseUri, string clientId, Uri callbackUri) {
+        public async Task<string> GetOAuthCodeAsync() {
             var oauthUri = new Uri(baseUri, string.Format(
                 "/oauth/authorize/?client_id={0}&redirect_uri={1}&response_type=code&scope=read write",
                 clientId,
@@ -31,7 +42,7 @@ namespace Ion10.Services {
             return part.Replace("code=", "");
         }
 
-        public async Task<OAuthToken> GetOAuthTokenAsync(Uri baseUri, string clientId, string clientSecret, string oauthCode, Uri callbackUri) {
+        public async Task<OAuthToken> GetOAuthTokenAsync(string oauthCode) {
             var oauthUri = new Uri(baseUri, "/oauth/token/");
             var req = new HttpRequestMessage(HttpMethod.Post, oauthUri);
             req.Content = new HttpFormUrlEncodedContent(
@@ -42,7 +53,7 @@ namespace Ion10.Services {
                     {"redirect_uri", callbackUri.ToString()},
                     {"grant_type", "authorization_code"}
                 });
-            var result = await App.HttpClient.SendRequestAsync(req);
+            var result = await httpClient.SendRequestAsync(req);
             var content = await result.Content.ReadAsStringAsync();
             var json = JObject.Parse(content);
             return new OAuthToken(
@@ -52,7 +63,7 @@ namespace Ion10.Services {
                 );
         }
 
-        public async Task<OAuthToken> RefreshOAuthTokenAsync(Uri baseUri, string clientId, string clientSecret, string oauthToken, Uri callbackUri) {
+        public async Task<OAuthToken> RefreshOAuthTokenAsync(string oauthToken) {
             var oauthUri = new Uri(baseUri, "/oauth/token/");
             var req = new HttpRequestMessage(HttpMethod.Post, oauthUri);
             req.Content = new HttpFormUrlEncodedContent(
@@ -63,7 +74,7 @@ namespace Ion10.Services {
                     {"redirect_uri", callbackUri.ToString()},
                     {"grant_type", "refresh_token"}
                 });
-            var result = await App.HttpClient.SendRequestAsync(req);
+            var result = await httpClient.SendRequestAsync(req);
             var content = await result.Content.ReadAsStringAsync();
             var json = JObject.Parse(content);
             return new OAuthToken(
@@ -71,6 +82,12 @@ namespace Ion10.Services {
                 (string)json["access_token"],
                 DateTime.UtcNow.AddSeconds((double)json["expires_in"])
                 );
+        }
+
+        public async Task<HttpResponseMessage> SendAsync(string uri, HttpRequestMessage request, OAuthToken token) {
+            request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", token.AccessToken);
+            request.RequestUri = new Uri(baseUri, uri);
+            return await httpClient.SendRequestAsync(request);
         }
     }
 

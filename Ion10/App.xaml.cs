@@ -31,7 +31,7 @@ namespace Ion10 {
             #endregion
         }
 
-        public static HttpClient HttpClient { get; set; } = new HttpClient();
+        public static OAuthSession OAuthSession { get; private set; }
 
         public override async Task OnInitializeAsync(IActivatedEventArgs args) {
             await SettingsService.Instance.InitializeAsync();
@@ -50,26 +50,19 @@ namespace Ion10 {
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args) {
             var settings = SettingsService.Instance;
-            var refreshToken = settings.OAuthToken;
-            if(refreshToken == null) { 
-                var code = await OAuthService.Instance.GetOAuthCodeAsync(
-                    settings.BaseUri,
-                    settings.OAuthId,
-                    settings.OAuthCallbackUri);
-                refreshToken = (await OAuthService.Instance.GetOAuthTokenAsync(
-                    settings.BaseUri,
-                    settings.OAuthId,
-                    settings.OAuthSecret,
-                    code,
-                    settings.OAuthCallbackUri)).RefreshToken;
-            }
-            var token = await OAuthService.Instance.RefreshOAuthTokenAsync(
+            OAuthSession = new OAuthSession(
                 settings.BaseUri,
                 settings.OAuthId,
                 settings.OAuthSecret,
-                refreshToken,
                 settings.OAuthCallbackUri);
+            var refreshToken = settings.OAuthToken;
+            if(refreshToken == null) { 
+                var code = await OAuthSession.GetOAuthCodeAsync();
+                refreshToken = (await OAuthSession.GetOAuthTokenAsync(code)).RefreshToken;
+            }
+            var token = await OAuthSession.RefreshOAuthTokenAsync(refreshToken);
             settings.OAuthToken = token.RefreshToken;
+            SessionState["token"] = token;
             NavigationService.Navigate(typeof(Views.MainPage));
         }
     }
