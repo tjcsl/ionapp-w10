@@ -35,6 +35,7 @@ namespace Ion10.Services {
                 WebAuthenticationOptions.None,
                 oauthUri,
                 callbackUri);
+            
             var part = result.ResponseData.Replace(callbackUri + "?", "");
             if(!part.StartsWith("code=")) {
                 return null;

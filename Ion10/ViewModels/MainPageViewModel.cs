@@ -22,10 +22,6 @@ namespace Ion10.ViewModels {
         public string Value { get { return _Value; } set { Set(ref _Value, value); } }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState) {
-            var message = new HttpRequestMessage {
-                Method = HttpMethod.Get
-            };
-            Value = await (await App.OAuthSession.SendAsync("/api/profile", message, (OAuthToken)SessionState["token"])).Content.ReadAsStringAsync();
             await Task.CompletedTask;
         }
 
