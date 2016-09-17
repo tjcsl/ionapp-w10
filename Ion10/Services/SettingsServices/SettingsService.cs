@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Credentials;
@@ -45,15 +48,15 @@ namespace Ion10.Services.SettingsServices {
         public string OAuthToken {
             get {
                 var vault = new PasswordVault();
-                var token = vault.FindAllByResource("OAuthToken");
+                var token = vault.RetrieveAll().Where(t => t.Resource == "OAuthToken").ToImmutableList();
                 if(token.Count == 0) {
                     return null;
                 }
-                return token[0].Password;
+                return vault.Retrieve(token[0].Resource, token[0].UserName).Password;
             }
             set {
                 var vault = new PasswordVault();
-                var tokens = vault.FindAllByResource("OAuthToken");
+                var tokens = vault.RetrieveAll().Where(t => t.Resource == "OAuthToken").ToImmutableList();
                 if(tokens.Count != 0) {
                     foreach(var token in tokens) {
                         vault.Remove(token);
