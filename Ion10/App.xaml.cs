@@ -50,24 +50,27 @@ namespace Ion10 {
 
         public override async Task OnStartAsync(StartKind startKind, IActivatedEventArgs args) {
             var settings = SettingsService.Instance;
-            var code = await OAuthService.Instance.GetOAuthCodeAsync(
-                settings.BaseUri,
-                settings.OAuthId,
-                settings.OAuthCallbackUri);
-            var token = await OAuthService.Instance.GetOAuthTokenAsync(
+            var refreshToken = settings.OAuthToken;
+            if(refreshToken == null) { 
+                var code = await OAuthService.Instance.GetOAuthCodeAsync(
+                    settings.BaseUri,
+                    settings.OAuthId,
+                    settings.OAuthCallbackUri);
+                refreshToken = (await OAuthService.Instance.GetOAuthTokenAsync(
+                    settings.BaseUri,
+                    settings.OAuthId,
+                    settings.OAuthSecret,
+                    code,
+                    settings.OAuthCallbackUri)).RefreshToken;
+            }
+            var token = await OAuthService.Instance.RefreshOAuthTokenAsync(
                 settings.BaseUri,
                 settings.OAuthId,
                 settings.OAuthSecret,
-                code,
+                refreshToken,
                 settings.OAuthCallbackUri);
-            await OAuthService.Instance.RefreshOAuthTokenAsync(
-                settings.BaseUri,
-                settings.OAuthId,
-                settings.OAuthSecret,
-                token.RefreshToken,
-                settings.OAuthCallbackUri);
+            settings.OAuthToken = token.RefreshToken;
             NavigationService.Navigate(typeof(Views.MainPage));
         }
     }
 }
-
