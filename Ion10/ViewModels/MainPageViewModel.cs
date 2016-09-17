@@ -8,6 +8,7 @@ using Windows.UI.Popups;
 using Template10.Services.NavigationService;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
+using Ion10.Services;
 
 namespace Ion10.ViewModels {
     public class MainPageViewModel : ViewModelBase {
@@ -21,9 +22,10 @@ namespace Ion10.ViewModels {
         public string Value { get { return _Value; } set { Set(ref _Value, value); } }
 
         public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> suspensionState) {
-            if(suspensionState.Any()) {
-                Value = suspensionState[nameof(Value)]?.ToString();
-            }
+            var message = new HttpRequestMessage {
+                Method = HttpMethod.Get
+            };
+            Value = await (await App.OAuthSession.SendAsync("/api/profile", message, (OAuthToken)SessionState["token"])).Content.ReadAsStringAsync();
             await Task.CompletedTask;
         }
 
