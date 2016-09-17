@@ -14,7 +14,7 @@ namespace Ion10.ViewModels {
     public class MainPageViewModel : ViewModelBase {
         public MainPageViewModel() {
             if(Windows.ApplicationModel.DesignMode.DesignModeEnabled) {
-                Value = "Designtime value";
+                _Value = "Designtime value";
             }
         }
 

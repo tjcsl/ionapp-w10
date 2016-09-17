@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Ion10.Services {
-    public class OAuthSession {
+    public sealed class OAuthSession : IDisposable {
         private readonly Uri baseUri;
         private readonly string clientId;
         private readonly string clientSecret;
@@ -89,6 +89,11 @@ namespace Ion10.Services {
             request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", token.AccessToken);
             request.RequestUri = new Uri(baseUri, uri);
             return await httpClient.SendRequestAsync(request);
+        }
+
+        public void Dispose()
+        {
+            httpClient.Dispose();
         }
     }
 
