@@ -48,7 +48,7 @@ namespace Ion10.Services {
             return new OAuthToken(
                 (string)json["refresh_token"],
                 (string)json["access_token"],
-                DateTime.Now.AddSeconds((double)json["expires_in"])
+                DateTime.UtcNow.AddSeconds((double)json["expires_in"])
                 );
         }
 
@@ -69,7 +69,7 @@ namespace Ion10.Services {
             return new OAuthToken(
                 (string)json["refresh_token"],
                 (string)json["access_token"],
-                DateTime.Now.AddSeconds((double)json["expires_in"])
+                DateTime.UtcNow.AddSeconds((double)json["expires_in"])
                 );
         }
     }
