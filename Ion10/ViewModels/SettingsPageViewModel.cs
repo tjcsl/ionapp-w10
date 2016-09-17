@@ -1,9 +1,31 @@
+// The MIT License (MIT) 
+// 
+// Copyright (c) 2016 Ion Native App Team
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal in
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+// the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Template10.Mvvm;
-using Template10.Services.SettingsService;
+using Windows.ApplicationModel;
 using Windows.UI.Xaml;
+using Ion10.Services.SettingsServices;
+using Ion10.Views;
+using Template10.Mvvm;
 
 namespace Ion10.ViewModels {
     public class SettingsPageViewModel : ViewModelBase {
@@ -12,27 +34,35 @@ namespace Ion10.ViewModels {
     }
 
     public class SettingsPartViewModel : ViewModelBase {
-        Services.SettingsServices.SettingsService _settings;
+        private string _BusyText = "Please wait...";
+        SettingsService _settings;
+
+        DelegateCommand _ShowBusyCommand;
 
         public SettingsPartViewModel() {
-            if(Windows.ApplicationModel.DesignMode.DesignModeEnabled) {
+            if(DesignMode.DesignModeEnabled) {
                 // designtime
             } else {
-                _settings = Services.SettingsServices.SettingsService.Instance;
+                _settings = SettingsService.Instance;
             }
         }
 
         public bool UseShellBackButton {
             get { return _settings.UseShellBackButton; }
-            set { _settings.UseShellBackButton = value; base.RaisePropertyChanged(); }
+            set {
+                _settings.UseShellBackButton = value;
+                RaisePropertyChanged();
+            }
         }
 
         public bool UseLightThemeButton {
             get { return _settings.AppTheme.Equals(ApplicationTheme.Light); }
-            set { _settings.AppTheme = value ? ApplicationTheme.Light : ApplicationTheme.Dark; base.RaisePropertyChanged(); }
+            set {
+                _settings.AppTheme = value ? ApplicationTheme.Light : ApplicationTheme.Dark;
+                RaisePropertyChanged();
+            }
         }
 
-        private string _BusyText = "Please wait...";
         public string BusyText {
             get { return _BusyText; }
             set {
@@ -41,25 +71,24 @@ namespace Ion10.ViewModels {
             }
         }
 
-        DelegateCommand _ShowBusyCommand;
         public DelegateCommand ShowBusyCommand
             => _ShowBusyCommand ?? (_ShowBusyCommand = new DelegateCommand(async () => {
-                Views.Busy.SetBusy(true, _BusyText);
-                await Task.Delay(5000);
-                Views.Busy.SetBusy(false);
-            }, () => !string.IsNullOrEmpty(BusyText)));
+                   Busy.SetBusy(true, _BusyText);
+                   await Task.Delay(5000);
+                   Busy.SetBusy(false);
+               }, () => !string.IsNullOrEmpty(BusyText)));
     }
 
     public class AboutPartViewModel : ViewModelBase {
-        public static Uri Logo => Windows.ApplicationModel.Package.Current.Logo;
+        public static Uri Logo => Package.Current.Logo;
 
-        public static string DisplayName => Windows.ApplicationModel.Package.Current.DisplayName;
+        public static string DisplayName => Package.Current.DisplayName;
 
-        public static string Publisher => Windows.ApplicationModel.Package.Current.PublisherDisplayName;
+        public static string Publisher => Package.Current.PublisherDisplayName;
 
         public static string Version {
             get {
-                var v = Windows.ApplicationModel.Package.Current.Id.Version;
+                var v = Package.Current.Id.Version;
                 return $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
             }
         }
@@ -67,4 +96,3 @@ namespace Ion10.ViewModels {
         public static Uri RateMe => new Uri("http://aka.ms/template10");
     }
 }
-

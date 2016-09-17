@@ -1,21 +1,38 @@
-﻿using System;
+﻿// The MIT License (MIT) 
+// 
+// Copyright (c) 2016 Ion Native App Team
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal in
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+// the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+// IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+// CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
-using Windows.UI.Popups;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Ion10.Services {
     public sealed class OAuthSession : IDisposable {
         private readonly Uri baseUri;
+        private readonly Uri callbackUri;
         private readonly string clientId;
         private readonly string clientSecret;
-        private readonly Uri callbackUri;
         private readonly HttpClient httpClient;
 
         public OAuthSession(Uri baseUri, string clientId, string clientSecret, Uri callbackUri) {
@@ -24,6 +41,10 @@ namespace Ion10.Services {
             this.clientSecret = clientSecret;
             this.callbackUri = callbackUri;
             httpClient = new HttpClient();
+        }
+
+        public void Dispose() {
+            httpClient.Dispose();
         }
 
         public async Task<string> GetOAuthCodeAsync() {
@@ -35,7 +56,7 @@ namespace Ion10.Services {
                 WebAuthenticationOptions.None,
                 oauthUri,
                 callbackUri);
-            
+
             var part = result.ResponseData.Replace(callbackUri + "?", "");
             if(!part.StartsWith("code=")) {
                 return null;
@@ -61,7 +82,7 @@ namespace Ion10.Services {
                 (string)json["refresh_token"],
                 (string)json["access_token"],
                 DateTime.UtcNow.AddSeconds((double)json["expires_in"])
-                );
+            );
         }
 
         public async Task<OAuthToken> RefreshOAuthTokenAsync(string oauthToken) {
@@ -82,18 +103,13 @@ namespace Ion10.Services {
                 (string)json["refresh_token"],
                 (string)json["access_token"],
                 DateTime.UtcNow.AddSeconds((double)json["expires_in"])
-                );
+            );
         }
 
         public async Task<HttpResponseMessage> SendAsync(Uri uri, HttpRequestMessage request, OAuthToken token) {
             request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", token.AccessToken);
             request.RequestUri = new Uri(baseUri, uri);
             return await httpClient.SendRequestAsync(request);
-        }
-
-        public void Dispose()
-        {
-            httpClient.Dispose();
         }
     }
 
