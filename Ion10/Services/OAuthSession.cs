@@ -106,9 +106,8 @@ namespace Ion10.Services {
             );
         }
 
-        public async Task<HttpResponseMessage> SendAsync(Uri uri, HttpRequestMessage request, OAuthToken token) {
+        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, OAuthToken token) {
             request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", token.AccessToken);
-            request.RequestUri = new Uri(baseUri, uri);
             return await httpClient.SendRequestAsync(request);
         }
     }
