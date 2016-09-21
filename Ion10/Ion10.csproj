@@ -98,6 +98,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\EighthBlock.cs" />
+    <Compile Include="Models\PaginatedResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EighthService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />

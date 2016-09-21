@@ -23,20 +23,17 @@ using System;
 using Newtonsoft.Json;
 
 namespace Ion10.Models {
-    public sealed class EighthBlock {
-        [JsonProperty("id")]
-        public int Id { get; private set; }
+    public sealed class PaginatedResponse<T> {
+        [JsonProperty("count")]
+        public int Count { get; private set; }
 
-        [JsonProperty("url")]
-        public Uri Uri { get; private set; }
+        [JsonProperty("next")]
+        public Uri Next { get; private set; }
 
-        [JsonProperty("date")]
-        public DateTime Date { get; private set; }
+        [JsonProperty("previous")]
+        public Uri Previous { get; private set; }
 
-        [JsonProperty("block_letter")]
-        public string Letter { get; private set; }
-
-        [JsonProperty("locked")]
-        public bool Locked { get; private set; }
+        [JsonProperty("results")]
+        public T[] Results { get; private set; }
     }
 }
